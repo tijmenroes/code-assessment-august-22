@@ -1,7 +1,7 @@
 <template>
-  <v-container>
+  <v-container class="createUserContainer">
     <h1>Create user</h1>
-    <v-card class="formContainer">
+    <div class="formContainer">
       <v-alert type="error" v-if="error"> Fill all values</v-alert>
       <v-text-field
         label="Name"
@@ -36,7 +36,7 @@
         <v-icon>mdi-plus</v-icon>
         Create user
       </v-btn>
-    </v-card>
+    </div>
   </v-container>
 </template>
 
@@ -74,6 +74,7 @@ export default {
     checkValues() {
       if (Object.values(this.formData).every((item) => item)) {
         this.createUser(this.formData)
+        this.$emit('close')
       } else {
         this.error = true;
       }
@@ -84,8 +85,16 @@ export default {
 
 <style scoped lang="scss">
 .formContainer {
-  & > * {
-    margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .v-btn {
+    margin-top: 30px;
   }
+}
+
+.createUserContainer {
+  background: white;
 }
 </style>
