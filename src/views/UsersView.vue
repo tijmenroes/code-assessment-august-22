@@ -9,23 +9,23 @@
       <v-card>
         <v-data-table :headers="headers" :items="users" class="elevation-1">
           <template v-slot:[`item.actions`]="{ item }">
-            <v-btn @click="deleteUser(item.id)" icon color="danger">
+            <v-btn @click="editUser(item)" icon color="danger">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
 
-            <v-btn @click="editUser(item)" icon>
+            <v-btn @click="deleteUser(item)" icon>
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </template>
         </v-data-table>
       </v-card>
     </v-container>
-    <v-dialog v-model="editUserModal" width="500">
-      Edit User
+    <v-dialog v-model="userModal" width="500">
+      <CreateUserView @close="closeUserModal" :user="selectedUser" />
     </v-dialog>
 
     <v-dialog v-model="createUserModal" width="500">
-      <CreateUserView @close="createUserModal = false"/>
+      <CreateUserView @close="createUserModal = false" />
     </v-dialog>
 
 
@@ -34,7 +34,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import CreateUserView from "./CreateUserView.vue";
+import CreateUserView from "@/components/CreateUserView.vue";
 
 export default {
   components: {
@@ -44,7 +44,9 @@ export default {
   data() {
     return {
       createUserModal: false,
-      editUserModal: false
+      editUserModal: false,
+      userModal: false,
+      selectedUser: {}
     };
   },
 
@@ -70,7 +72,13 @@ export default {
     },
 
     editUser(user) {
-      console.log(user)
+      this.selectedUser = user
+      this.userModal = true
+    },
+
+    closeUserModal () {
+      this.selectedUser = {}
+      this.userModal = false
     }
   },
 

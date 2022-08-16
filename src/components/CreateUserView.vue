@@ -1,6 +1,6 @@
 <template>
   <v-container class="createUserContainer">
-    <h1>Create user</h1>
+    <h1>{{ isEditingUser ? "Create" : "Edit" }} user</h1>
     <div class="formContainer">
       <v-alert type="error" v-if="error"> Fill all values</v-alert>
       <v-text-field
@@ -20,31 +20,39 @@
         :rules="rules"
         type="password"
         hide-details="auto"
+        v-if="!isEditingUser"
         v-model="formData.password"
       />
-      <v-file-input
-        label="picture"
-        hide-details="auto"
-      />
+      <v-file-input label="picture" hide-details="auto" />
       <v-select
         label="role"
         :items="roles"
         hide-details="auto"
         v-model="formData.role"
       />
-      <v-btn color="primary" @click="checkValues">
+      <v-btn color="primary" @click="checkValues" v-if="!isEditingUser">
         <v-icon>mdi-plus</v-icon>
         Create user
+      </v-btn>
+
+      <v-btn color="primary" @click="checkValues" v-else>
+        <v-icon>mdi-pencil</v-icon>
+        Update user
       </v-btn>
     </div>
   </v-container>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 
 export default {
-  // TODO: Make this component?
+  props: {
+    user: {
+      type: Object,
+      required: false,
+    },
+  },
   data() {
     return {
       formData: {
@@ -64,21 +72,42 @@ export default {
     };
   },
 
-  methods: {
+  computed: {
+    isEditingUser() {
+      return !!this.user;
+    },
+  },
 
-    ...mapActions(['createUser']),
+  methods: {
+    ...mapActions(["createUser", "updateUser"]),
 
     /**
      * Simple check to see if all values are filled, if they are send create user request
      */
     checkValues() {
+      console.log(this.formData);
       if (Object.values(this.formData).every((item) => item)) {
-        this.createUser(this.formData)
-        this.$emit('close')
+        console.log(this.formData);
+        if (this.isEditingUser) {
+          this.updateUser(this.formData);
+        } else {
+          this.createUser(this.formData);
+        }
+        this.$emit("close");
       } else {
         this.error = true;
       }
     },
+  },
+  created() {
+    if (this.isEditingUser) {
+      const whitelist = ["id", "name", "email", "role", "picture"];
+      const user = {};
+      Object.keys(this.user).forEach((key) => {
+        if (whitelist.includes(key)) user[key] = this.user[key];
+      });
+      this.formData = user;
+    }
   },
 };
 </script>

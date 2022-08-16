@@ -42,6 +42,15 @@ export default new Vuex.Store({
         console.log(e)
       }
 
+    },
+
+    async updateUser({dispatch}, data) {
+      try {
+        await api.patch(`/users/${data.id}`, data)
+        dispatch('getUsers')
+      } catch (e) {
+        console.log(e)
+      }
     }
   },
 });
