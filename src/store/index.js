@@ -51,6 +51,15 @@ export default new Vuex.Store({
       } catch (e) {
         console.log(e)
       }
+    },
+
+    async deleteUser({dispatch}, id) {
+      try {
+        await api.delete(`/users/${id}`)
+        dispatch('getUsers')
+      } catch (e) {
+        console.log(e)
+      }
     }
   },
 });

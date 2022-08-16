@@ -35,10 +35,17 @@
         Create user
       </v-btn>
 
-      <v-btn color="primary" @click="checkValues" v-else>
-        <v-icon>mdi-pencil</v-icon>
-        Update user
-      </v-btn>
+      <div class="actions" v-else>
+        <v-btn color="error" @click="handleRemove(user.id)">
+          <v-icon>mdi-delete</v-icon>
+          Delete user
+        </v-btn>
+
+        <v-btn color="primary" @click="checkValues">
+          <v-icon>mdi-pencil</v-icon>
+          Update user
+        </v-btn>
+      </div>
     </div>
   </v-container>
 </template>
@@ -79,15 +86,13 @@ export default {
   },
 
   methods: {
-    ...mapActions(["createUser", "updateUser"]),
+    ...mapActions(["createUser", "updateUser", "deleteUser"]),
 
     /**
      * Simple check to see if all values are filled, if they are send create user request
      */
     checkValues() {
-      console.log(this.formData);
       if (Object.values(this.formData).every((item) => item)) {
-        console.log(this.formData);
         if (this.isEditingUser) {
           this.updateUser(this.formData);
         } else {
@@ -97,6 +102,11 @@ export default {
       } else {
         this.error = true;
       }
+    },
+
+    handleRemove(id) {
+      this.deleteUser(id);
+      this.$emit("close");
     },
   },
   created() {
@@ -125,5 +135,11 @@ export default {
 
 .createUserContainer {
   background: white;
+}
+
+.actions {
+  display: flex;
+  gap: 5px;
+  justify-content: flex-end;
 }
 </style>
