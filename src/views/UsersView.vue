@@ -13,7 +13,35 @@
       </div>
 
       <v-card>
-        <v-data-table :headers="headers" :items="items" class="elevation-1">
+        <v-card-title class="filterOptions">
+          <div>
+            <v-text-field
+              v-model="search"
+              append-icon="mdi-magnify"
+              label="Search"
+              single-line
+              hide-details
+            ></v-text-field>
+          </div>
+
+          <div>
+            <v-select
+              :items="roles"
+              label="Outlined style"
+              v-model="filteredRole"
+              @change="roleSelected"
+              outlined
+              hide-details
+              height="10"
+            ></v-select>
+          </div>
+        </v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="items"
+          :search="search"
+          class="elevation-1"
+        >
           <template v-slot:[`item.deleted_at`]="{ item }">
             <v-icon v-if="item.deleted_at" color="error">mdi-delete</v-icon>
           </template>
@@ -53,14 +81,16 @@ export default {
 
   data() {
     return {
+      search: "",
       userModal: false,
       selectedUser: {},
       showDeletedUsers: false,
+      filteredRole: null
     };
   },
 
   computed: {
-    ...mapGetters(["users", "currentUser", "isLoggedIn"]),
+    ...mapGetters(["users", "currentUser", "isLoggedIn", "availableRoles"]),
 
     headers() {
       let headers = [
@@ -83,9 +113,20 @@ export default {
     },
 
     items() {
-      if (!this.showDeletedUsers) return this.users.filter((item) => !item.deleted_at);
-      return this.users;
+      let items = this.users
+      if (!this.showDeletedUsers) {
+        items = items.filter((item) => !item.deleted_at);
+      }
+
+      if (this.filteredRole) {
+        items = items.filter((item) => item.role === this.filteredRole)
+      }
+      return items;
     },
+
+    roles () {
+      return ["all", ...this.availableRoles]
+    }
   },
 
   methods: {
@@ -100,6 +141,11 @@ export default {
       this.selectedUser = {};
       this.userModal = false;
     },
+
+    roleSelected (role) {
+      if (role === 'all') this.filteredRole = null
+      else this.filteredRole = role
+    }
   },
 
   created() {
@@ -121,6 +167,15 @@ export default {
   div.switch {
     display: inline-block;
     margin-right: 20px;
+  }
+}
+
+.filterOptions {
+  display: flex;
+  justify-content: space-between;
+
+  & > * {
+    width: 450px;
   }
 }
 </style>

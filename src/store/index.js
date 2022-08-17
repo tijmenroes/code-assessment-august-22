@@ -11,6 +11,7 @@ export default new Vuex.Store({
     users: [],
     currentUser: {},
     error: null,
+    availableRoles: ["developer", "designer", "intern", "boss"],
   },
   getters: {
     users: (state) => state.users,
@@ -21,6 +22,8 @@ export default new Vuex.Store({
       !!state.currentUser && Object.keys(state.currentUser).length,
 
     error: (state) => state.error,
+
+    availableRoles: (state) => state.availableRoles
   },
   mutations: {
     SET_USERS(state, users) {
