@@ -9,33 +9,35 @@
             v-model="showDeletedUsers"
             label="Show deleted users"
           ></v-switch>
-          <v-btn color="primary" @click="userModal = !userModal">
-            <v-icon>mdi-plus</v-icon>
-            Create user
-          </v-btn>
         </div>
       </div>
 
       <v-card>
         <v-data-table :headers="headers" :items="items" class="elevation-1">
           <template v-slot:[`item.deleted_at`]="{ item }">
-              <v-icon v-if="item.deleted_at" color="error">mdi-delete</v-icon>
+            <v-icon v-if="item.deleted_at" color="error">mdi-delete</v-icon>
           </template>
-          
-          <template v-slot:[`item.actions`]="{ item }">
-            <v-btn @click="editUser(item)" icon v-if="!item.deleted_at">
-              <v-icon>mdi-pencil</v-icon>
-            </v-btn>
 
-            <v-btn @click="restoreUser(item.id)" icon v-else>
-              <v-icon>mdi-delete-off</v-icon>
-            </v-btn>
+          <template v-slot:[`item.actions`]="{ item }">
+            <div v-if="item.id !== currentUser.id">
+              <v-btn @click="editUser(item)" icon v-if="!item.deleted_at">
+                <v-icon>mdi-pencil</v-icon>
+              </v-btn>
+
+              <v-btn @click="restoreUser(item.id)" icon v-else>
+                <v-icon>mdi-delete-off</v-icon>
+              </v-btn>
+            </div>
           </template>
         </v-data-table>
       </v-card>
     </v-container>
     <v-dialog v-model="userModal" width="500">
-      <CreateUserView @close="userModal = false" :user="selectedUser" :isDeleted="!!selectedUser.deleted_at" />
+      <CreateUserView
+        @close="userModal = false"
+        :user="selectedUser"
+        :isDeleted="!!selectedUser.deleted_at"
+      />
     </v-dialog>
   </div>
 </template>
@@ -58,23 +60,32 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["users"]),
+    ...mapGetters(["users", "currentUser", "isLoggedIn"]),
 
     headers() {
-      return [
+      let headers = [
         { text: "Status", value: "deleted_at" },
         { text: "Picture", value: "picture" },
         { text: "Name", value: "name" },
         { text: "Email", value: "email" },
         { text: "Role", value: "role" },
-        { text: "", value: "actions", align: "right" },
       ];
+
+      if (this.isLoggedIn) {
+        headers = [
+          ...headers,
+          { text: "email", value: "email" },
+          { text: "phone_number", value: "phone_number" },
+        ];
+      }
+      headers.push({ text: "", value: "actions", align: "right" });
+      return headers;
     },
 
-    items () {
-      if (!this.showDeletedUsers) return this.users.filter(item => !item.deleted_at)
-      return this.users
-    }
+    items() {
+      if (!this.showDeletedUsers) return this.users.filter((item) => !item.deleted_at);
+      return this.users;
+    },
   },
 
   methods: {
@@ -99,7 +110,7 @@ export default {
 
 <style scoped lang="scss">
 .usersContainer {
-  max-width: 1000px;
+  max-width: 1400px;
 }
 
 .header {

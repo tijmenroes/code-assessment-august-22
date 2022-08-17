@@ -35,11 +35,11 @@
       <div v-if="!isEditingUser">
         <v-btn color="primary" @click="checkValues">
           <slot name="primaryButtonContent">
-          <v-icon>mdi-plus</v-icon>
-          Create user
-      </slot>
+            <v-icon>mdi-plus</v-icon>
+            Create user
+          </slot>
         </v-btn>
-        </div>
+      </div>
 
       <div class="actions" v-else>
         <v-btn color="error" @click="handleRemove(user.id)">
@@ -70,8 +70,8 @@ export default {
 
     isDeleted: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -104,12 +104,12 @@ export default {
      * Simple check to see if all values are filled, if they are send create user request
      */
     checkValues() {
-        if (this.isEditingUser) {
-          this.updateUser(this.formData);
-        } else {
-          this.registerUser(this.formData);
-        }
-        this.$emit("close");
+      if (this.isEditingUser) {
+        this.updateUser({ data: this.formData, id: this.user.id });
+      } else {
+        this.registerUser(this.formData);
+      }
+      this.$emit("close");
     },
 
     handleRemove(id) {
