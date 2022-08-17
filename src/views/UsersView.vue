@@ -134,7 +134,6 @@ export default {
     ...mapActions(["getUsers", "restoreUser"]),
 
     editUser(user) {
-      console.log(user)
       this.selectedUser = user;
       this.userModal = true;
     },
