@@ -3,7 +3,6 @@ import Vuex from 'vuex';
 import Axios from 'axios'
 
 Vue.use(Vuex);
-
 // Normally this would be in /api/ folder but had problems with importing it...
 const api = Axios.create({
   baseURL: "http://localhost:8000/api", // TODO: .env 
@@ -54,6 +53,15 @@ export default new Vuex.Store({
     },
 
     async deleteUser({dispatch}, id) {
+      try {
+        await api.delete(`/users/${id}`)
+        dispatch('getUsers')
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    async restoreUser({dispatch}, id) {
       try {
         await api.delete(`/users/${id}`)
         dispatch('getUsers')
