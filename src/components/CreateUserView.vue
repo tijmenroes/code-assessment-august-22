@@ -1,8 +1,9 @@
 <template>
   <v-container class="createUserContainer">
-    <h1>{{ isEditingUser ? "Create" : "Edit" }} user</h1>
+    <slot name="title">
+      <h1>{{ isEditingUser ? "Edit" : "Create" }} user</h1>
+    </slot>
     <div class="formContainer">
-      <v-alert type="error" v-if="error"> Fill all values</v-alert>
       <v-text-field
         label="Name"
         :rules="rules"
@@ -30,10 +31,15 @@
         hide-details="auto"
         v-model="formData.role"
       />
-      <v-btn color="primary" @click="checkValues" v-if="!isEditingUser">
-        <v-icon>mdi-plus</v-icon>
-        Create user
-      </v-btn>
+
+      <div v-if="!isEditingUser">
+        <v-btn color="primary" @click="checkValues">
+          <slot name="primaryButtonContent">
+          <v-icon>mdi-plus</v-icon>
+          Create user
+      </slot>
+        </v-btn>
+        </div>
 
       <div class="actions" v-else>
         <v-btn color="error" @click="handleRemove(user.id)">
@@ -51,6 +57,8 @@
 </template>
 
 <script>
+// TODO: Refactor this component, too many use cases make it too complex atm.
+// Probably better to make it more generic and only use the fields
 import { mapActions } from "vuex";
 
 export default {
@@ -59,6 +67,11 @@ export default {
       type: Object,
       required: false,
     },
+
+    isDeleted: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -70,7 +83,6 @@ export default {
         role: "developer",
       },
 
-      error: false,
       rules: [
         (value) => !!value || "Required.",
         (value) => (value && value.length >= 3) || "Min 3 characters",
@@ -81,27 +93,23 @@ export default {
 
   computed: {
     isEditingUser() {
-      return !!this.user;
+      return !!this.user && Object.keys(this.user).length > 0;
     },
   },
 
   methods: {
-    ...mapActions(["createUser", "updateUser", "deleteUser"]),
+    ...mapActions(["updateUser", "deleteUser", "registerUser"]),
 
     /**
      * Simple check to see if all values are filled, if they are send create user request
      */
     checkValues() {
-      if (Object.values(this.formData).every((item) => item)) {
         if (this.isEditingUser) {
           this.updateUser(this.formData);
         } else {
-          this.createUser(this.formData);
+          this.registerUser(this.formData);
         }
         this.$emit("close");
-      } else {
-        this.error = true;
-      }
     },
 
     handleRemove(id) {
