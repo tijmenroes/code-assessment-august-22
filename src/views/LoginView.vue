@@ -6,14 +6,14 @@
       <v-card-text>
         <v-text-field
           label="Name"
-          :rules="rules"
+          :rules="inputRules"
           hide-details="auto"
           v-model="formData.name"
         />
 
         <v-text-field
           label="password"
-          :rules="rules"
+          :rules="inputRules"
           type="password"
           hide-details="auto"
           v-model="formData.password"
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -56,11 +56,11 @@ export default {
         name: "",
         password: "",
       },
-      rules: [
-        (value) => !!value || "Required.",
-        (value) => (value && value.length >= 3) || "Min 3 characters",
-      ],
     };
+  },
+
+  computed: {
+    ...mapGetters(["inputRules"]),
   },
 
   methods: {

@@ -24,7 +24,15 @@
 
     <v-main>
       <v-alert type="error" v-if="error"> {{ error }}</v-alert>
-      <div class="loadingContainer" v-if="isLoading" >
+      <v-snackbar
+        :value="snackbar.value"
+        :color="snackbar.color"
+        rounded="pill"
+        timeout="3000"
+      >
+        {{ snackbar.message }}
+      </v-snackbar>
+      <div class="loadingContainer" v-if="isLoading">
         <div class="loadingBar">
           Loading...
           <v-progress-linear color="primary" indeterminate rounded height="6" />
@@ -42,7 +50,13 @@ export default {
   name: "App",
 
   computed: {
-    ...mapGetters(["error", "currentUser", "isLoggedIn", "isLoading"]),
+    ...mapGetters([
+      "error",
+      "currentUser",
+      "isLoggedIn",
+      "isLoading",
+      "snackbar",
+    ]),
   },
 
   methods: {

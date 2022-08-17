@@ -5,10 +5,6 @@
 
       <v-card-text>
         <CreateUserView>
-          <template #title>
-            <span />
-          </template>
-
           <template #primaryButtonContent> Register </template>
         </CreateUserView>
       </v-card-text>

@@ -1,24 +1,21 @@
 <template>
   <v-container class="createUserContainer">
-    <slot name="title">
-      <h1>{{ isEditingUser ? "Edit" : "Create" }} user</h1>
-    </slot>
     <div class="formContainer">
       <v-text-field
         label="Name"
-        :rules="rules"
+        :rules="inputRules"
         hide-details="auto"
         v-model="formData.name"
       />
       <v-text-field
         label="email"
-        :rules="rules"
+        :rules="inputRules"
         hide-details="auto"
         v-model="formData.email"
       />
       <v-text-field
         label="password"
-        :rules="rules"
+        :rules="inputRules"
         type="password"
         hide-details="auto"
         v-if="!isEditingUser"
@@ -27,7 +24,7 @@
       <v-file-input label="picture" hide-details="auto" />
       <v-select
         label="role"
-        :items="roles"
+        :items="availableRoles"
         hide-details="auto"
         v-model="formData.role"
       />
@@ -42,7 +39,7 @@
       </div>
 
       <div class="actions" v-else>
-        <v-btn color="error" @click="handleRemove(user.id)">
+        <v-btn color="error" @click="handleRemove(user)">
           <v-icon>mdi-delete</v-icon>
           Delete user
         </v-btn>
@@ -57,9 +54,7 @@
 </template>
 
 <script>
-// TODO: Refactor this component, too many use cases make it too complex atm.
-// Probably better to make it more generic and only use the fields
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   props: {
@@ -82,16 +77,12 @@ export default {
         picture: "abcdefg", // Didn't apply v-model because of time reasons, just a string for now.
         role: "developer",
       },
-
-      rules: [
-        (value) => !!value || "Required.",
-        (value) => (value && value.length >= 3) || "Min 3 characters",
-      ],
-      roles: ["developer", "designer", "intern", "boss"],
     };
   },
 
   computed: {
+    ...mapGetters(["availableRoles", "inputRules"]),
+
     isEditingUser() {
       return !!this.user && Object.keys(this.user).length > 0;
     },
@@ -112,11 +103,12 @@ export default {
       this.$emit("close");
     },
 
-    handleRemove(id) {
-      this.deleteUser(id);
+    handleRemove(user) {
+      this.deleteUser(user);
       this.$emit("close");
     },
   },
+
   created() {
     if (this.isEditingUser) {
       const whitelist = ["id", "name", "email", "role", "picture"];
