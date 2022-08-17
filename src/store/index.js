@@ -120,7 +120,7 @@ export default new Vuex.Store({
         data,
       });
       if (response) {
-        dispatch("setUser", response);
+        await dispatch("setUser", response);
         router.push("/users");
       }
     },
@@ -132,7 +132,7 @@ export default new Vuex.Store({
         data,
       });
       if (response) {
-        dispatch("setUser", response);
+        await dispatch("setUser", response);
         router.push("/users");
       }
     },
