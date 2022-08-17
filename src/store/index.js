@@ -12,6 +12,7 @@ export default new Vuex.Store({
     currentUser: {},
     error: null,
     availableRoles: ["developer", "designer", "intern", "boss"],
+    loading: false
   },
   getters: {
     users: (state) => state.users,
@@ -23,7 +24,9 @@ export default new Vuex.Store({
 
     error: (state) => state.error,
 
-    availableRoles: (state) => state.availableRoles
+    availableRoles: (state) => state.availableRoles,
+
+    isLoading: state => state.loading
   },
   mutations: {
     SET_USERS(state, users) {
@@ -35,15 +38,19 @@ export default new Vuex.Store({
     SET_ERROR(state, message) {
       state.error = message;
     },
+    SET_LOADING(state, isLoading) {
+      console.log(isLoading)
+      state.loading = isLoading
+    }
   },
   actions: {
-    async getUsers({ commit }) {
-      try {
-        const response = await api.get("/users");
-        commit("SET_USERS", response.data);
-      } catch (e) {
-        console.log(e);
-      }
+    async getUsers({ dispatch, commit }) {
+
+      const response = await dispatch("makeRequest", {
+        method: "get",
+        url: '/users',
+      });
+      if (response) commit("SET_USERS", response.data);
     },
 
     async updateUser({ dispatch }, { data, id }) {
@@ -113,18 +120,21 @@ export default new Vuex.Store({
     },
 
     async makeRequest({ commit }, { method, url, data = null }) {
+      commit('SET_LOADING', true)
       try {
         const response = await api({
           method: method,
           url: url,
           data: data,
         });
+        commit('SET_LOADING', false)
         return response;
       } catch (e) {
         commit("SET_ERROR", e.response?.data?.message);
         setTimeout(() => {
           commit("SET_ERROR", null);
         }, "3000");
+        commit('SET_LOADING', false)
       }
     },
   },

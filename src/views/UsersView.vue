@@ -44,6 +44,7 @@
         >
           <template v-slot:[`item.deleted_at`]="{ item }">
             <v-icon v-if="item.deleted_at" color="error">mdi-delete</v-icon>
+            <v-icon v-else color="success">mdi-check</v-icon>
           </template>
 
           <template v-slot:[`item.actions`]="{ item }">
@@ -97,15 +98,14 @@ export default {
         { text: "Status", value: "deleted_at" },
         { text: "Picture", value: "picture" },
         { text: "Name", value: "name" },
-        { text: "Email", value: "email" },
         { text: "Role", value: "role" },
       ];
 
       if (this.isLoggedIn) {
         headers = [
           ...headers,
-          { text: "email", value: "email" },
-          { text: "phone_number", value: "phone_number" },
+          { text: "Email", value: "email" },
+          { text: "Phone number", value: "phone_number" },
         ];
       }
       headers.push({ text: "", value: "actions", align: "right" });
