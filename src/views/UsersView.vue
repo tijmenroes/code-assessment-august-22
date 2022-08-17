@@ -86,7 +86,7 @@ export default {
       userModal: false,
       selectedUser: {},
       showDeletedUsers: false,
-      filteredRole: null
+      filteredRole: null,
     };
   },
 
@@ -113,20 +113,20 @@ export default {
     },
 
     items() {
-      let items = this.users
+      let items = this.users;
       if (!this.showDeletedUsers) {
         items = items.filter((item) => !item.deleted_at);
       }
 
       if (this.filteredRole) {
-        items = items.filter((item) => item.role === this.filteredRole)
+        items = items.filter((item) => item.role === this.filteredRole);
       }
       return items;
     },
 
-    roles () {
-      return ["all", ...this.availableRoles]
-    }
+    roles() {
+      return ["all", ...this.availableRoles];
+    },
   },
 
   methods: {
@@ -142,10 +142,10 @@ export default {
       this.userModal = false;
     },
 
-    roleSelected (role) {
-      if (role === 'all') this.filteredRole = null
-      else this.filteredRole = role
-    }
+    roleSelected(role) {
+      if (role === "all") this.filteredRole = null;
+      else this.filteredRole = role;
+    },
   },
 
   created() {
