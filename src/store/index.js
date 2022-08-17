@@ -158,6 +158,9 @@ export default new Vuex.Store({
     async makeRequest({ commit }, { method, url, data = null }) {
       commit("SET_LOADING", true);
       try {
+        if (VueCookies.get("token")) {
+          api.defaults.headers.Authorization = `Bearer ${VueCookies.get("token")}`;
+        }
         const response = await api({
           method: method,
           url: url,

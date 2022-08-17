@@ -63,7 +63,8 @@
     </v-container>
     <v-dialog v-model="userModal" width="500">
       <CreateUserView
-        @close="userModal = false"
+        v-if="userModal"
+        @close="closeUserModal"
         :user="selectedUser"
         :isDeleted="!!selectedUser.deleted_at"
       />
@@ -133,6 +134,7 @@ export default {
     ...mapActions(["getUsers", "restoreUser"]),
 
     editUser(user) {
+      console.log(user)
       this.selectedUser = user;
       this.userModal = true;
     },
