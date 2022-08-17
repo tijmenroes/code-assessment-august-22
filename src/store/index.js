@@ -92,6 +92,18 @@ export default new Vuex.Store({
       }
     },
 
+    async logOutUser({ dispatch, commit }) {
+      const response = await dispatch(`makeRequest`, {
+        method: "post",
+        url: "/logout",
+      });
+      if (response) {
+        commit("SET_CURRENT_USER", null);
+        VueCookies.remove("token");
+        router.push("/login");
+      }
+    },
+
     setUser({ commit }, response) {
       VueCookies.set("token", response.data.token);
       commit("SET_CURRENT_USER", response.data.user);

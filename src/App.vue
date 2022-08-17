@@ -4,6 +4,27 @@
       <div class="d-flex align-center">
         <h1>OWOW</h1>
       </div>
+      <v-spacer></v-spacer>
+    <v-menu offset-y v-if="isLoggedIn">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color=""
+          light
+          v-bind="attrs"
+          v-on="on"
+        >
+          {{currentUser.name}} 
+          <v-icon>mdi-chevron-down</v-icon>
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item>
+          <v-list-item-title @click="logOutUser">
+            <v-icon small class="logoutIcon">mdi-lock</v-icon>Logout
+            </v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     </v-app-bar>
 
     <v-main>
@@ -14,13 +35,23 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   name: "App",
 
   computed: {
-    ...mapGetters(['error'])
+    ...mapGetters(['error', 'currentUser', 'isLoggedIn']),
+  },
+
+  methods: {
+    ...mapActions(['logOutUser'])
   }
 };
 </script>
+
+<style scoped>
+.logoutIcon {
+  margin-left: 8px;
+}
+</style>
