@@ -34,6 +34,13 @@
             @click="$router.push('/register')"
             >Register</v-btn
           >
+          <span> or </span>
+          <v-btn
+            class="loginButton"
+            color="dark"
+            @click="$router.push('/users')"
+            >Continue as guest</v-btn
+          >
         </div>
       </v-card-text>
     </v-card>
