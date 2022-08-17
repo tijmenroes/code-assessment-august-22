@@ -28,7 +28,6 @@
         :value="snackbar.value"
         :color="snackbar.color"
         rounded="pill"
-        timeout="3000"
       >
         {{ snackbar.message }}
       </v-snackbar>

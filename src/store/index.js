@@ -59,6 +59,9 @@ export default new Vuex.Store({
         message,
         color,
       };
+      setTimeout(() => {
+        state.snackbar.value = false
+      }, "3000");
     },
   },
   actions: {
